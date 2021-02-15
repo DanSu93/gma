@@ -1,12 +1,13 @@
 # gma
 In memory key-value store
 
-CMD:
-* gma serve - запуск сервера, который откроет сокет и будет основным хранилищем key-value store
-* gma cli - консоль, в которой можно писать команды, валидные команды будут отправляться в сокет. Если сервер не запущен, то выходим с сообщением что сервер не запущен. 
+# Usage
+
+* gma serve - starting the server which will open the keystore and will be the main store
+* gma cli - a console in which you can write commands, valid commands will be sent to the socket. If the server is not running, then we exit with the message that the server is not running
 
 
-TODO:
+# TODO:
 * Start server demonize
 * Support TTL
 * Tests
