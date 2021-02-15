@@ -115,24 +115,15 @@ func echoServer(connect net.Conn, store map[string]string) {
 		}
 
 		data := string(buf[0:lastByte])
-
 		// TODO: strings.Fields(data)
 		switch {
-		// SET lol bol
 		case strings.HasPrefix(data, "SET "):
 			handleSet(data, store, connect)
-		// GET lol bol
 		case strings.HasPrefix(data, "GET "):
 			handleGet(data, store, connect)
-
 		case strings.HasPrefix(data, "DEL "):
 			handleDel(data, store, connect)
 		}
-
-		//_, err = c.Write(data)
-		//if err != nil {
-		//	log.Fatal("Writing client error: ", err)
-		//}
 	}
 }
 
