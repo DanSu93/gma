@@ -154,39 +154,41 @@ func handleGet(data string, store map[string]string, connect net.Conn) {
 func handleDel(data string, store map[string]string, connect net.Conn) {
 	arrayKeys := strings.Fields(strings.TrimPrefix(data, "DEL "))
 
-	if isArgsCntCorrect(arrayKeys, "DEL", connect) {
-		count := 0
-		for _, key := range arrayKeys {
-			if _, found := store[key]; found {
-				delete(store, key)
-				count++
-			}
-		}
-		response(connect, strconv.Itoa(count))
+	if !isArgsCntCorrect(arrayKeys, "DEL", connect) {
+		return
 	}
+	count := 0
+	for _, key := range arrayKeys {
+		if _, found := store[key]; found {
+			delete(store, key)
+			count++
+		}
+	}
+	response(connect, strconv.Itoa(count))
 }
 
 func handleKeys(data string, store map[string]string, connect net.Conn) {
 	arrayKV := strings.Fields(strings.TrimPrefix(data, "KEYS "))
 
-	if isArgsCntCorrect(arrayKV, "KEYS", connect) {
-		result := ""
-		for key, _ := range store {
-			if found, err := regexp.MatchString(arrayKV[0], key); found {
-				if err != nil {
-					response(connect, "(error) Syntax error")
-					return
-				}
-				result += key + "\n"
-			}
-		}
-
-		if result == "" {
-			result = "(nil)"
-		}
-
-		response(connect, strings.Trim(result, "\n"))
+	if !isArgsCntCorrect(arrayKV, "KEYS", connect) {
+		return
 	}
+	result := ""
+	for key := range store {
+		if found, err := regexp.MatchString(arrayKV[0], key); found {
+			if err != nil {
+				response(connect, "(error) Syntax error")
+				return
+			}
+			result += key + "\n"
+		}
+	}
+
+	if result == "" {
+		result = "(nil)"
+	}
+
+	response(connect, strings.Trim(result, "\n"))
 }
 
 func isArgsCntCorrect(commandArgs []string, commandName string, connect net.Conn) bool {
