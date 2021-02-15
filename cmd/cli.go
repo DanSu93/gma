@@ -85,7 +85,7 @@ func startCli() {
 		switch operation[0] {
 		case "exit":
 			return
-		case "SET", "GET", "DEL":
+		case "SET", "GET", "DEL", "KEYS":
 			handleSocketCommand(client, strings.Trim(text, "\n"))
 		//case "DELETE": 		Delete(operation[1], items)
 		default:

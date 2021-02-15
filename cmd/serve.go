@@ -23,6 +23,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -123,6 +124,8 @@ func echoServer(connect net.Conn, store map[string]string) {
 			handleGet(data, store, connect)
 		case strings.HasPrefix(data, "DEL "):
 			handleDel(data, store, connect)
+		case strings.HasPrefix(data, "KEYS"):
+			handleKeys(data, store, connect)
 		}
 	}
 }
@@ -163,6 +166,29 @@ func handleDel(data string, store map[string]string, connect net.Conn) {
 	}
 }
 
+func handleKeys(data string, store map[string]string, connect net.Conn) {
+	arrayKV := strings.Fields(strings.TrimPrefix(data, "KEYS "))
+
+	if isArgsCntCorrect(arrayKV, "KEYS", connect) {
+		result := ""
+		for key, _ := range store {
+			if found, err := regexp.MatchString(arrayKV[0], key); found {
+				if err != nil {
+					response(connect, "(error) Syntax error")
+					return
+				}
+				result += key + "\n"
+			}
+		}
+
+		if result == "" {
+			result = "(nil)"
+		}
+
+		response(connect, strings.Trim(result, "\n"))
+	}
+}
+
 func isArgsCntCorrect(commandArgs []string, commandName string, connect net.Conn) bool {
 	var isOk bool
 
@@ -173,6 +199,8 @@ func isArgsCntCorrect(commandArgs []string, commandName string, connect net.Conn
 		isOk = len(commandArgs) == 1
 	case "DEL":
 		isOk = len(commandArgs) > 0
+	case "KEYS":
+		isOk = len(commandArgs) == 1
 	}
 
 	if isOk {
