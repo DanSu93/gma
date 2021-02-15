@@ -12,4 +12,4 @@ In memory key-value store
 * Support TTL
 * Tests
 * Support persistence storage
-* Нагрузочное тестирование
+* Stress Testing
